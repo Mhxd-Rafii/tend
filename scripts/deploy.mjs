@@ -32,7 +32,7 @@ async function deployment(environment) {
   let result
   if (reusable && prior?.url) result = json((await vc(['inspect', prior.url, '--wait', '--timeout', '3m', '--json'], { quiet: true })).stdout)
   else {
-    const output = await vc(['deploy', '--yes', '--json', '--environment', environment], { quiet: true })
+    const output = await vc(['deploy', '--yes', '--json', '--no-wait', '--environment', environment], { quiet: true })
     result = json(output.stdout)
   }
   const rawURL = result.url || result.deployment?.url

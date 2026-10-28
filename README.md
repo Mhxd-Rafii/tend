@@ -1,5 +1,7 @@
 # Tend — Turso + Vercel habit tracker
 
+Tend is a daily habit tracker.
+
 React + Vite + TypeScript, Tailwind, Radix/shadcn-style source components, React Hook Form + Zod, TanStack Query/Table, Recharts, date-fns, Better Auth, and Turso/libSQL. The existing activity journal, suggestions, habits, calendar, gym, reports, themes, custom fields, and PWA are preserved.
 
 **Version 2 uses authenticated server APIs and Turso as the primary database.** IndexedDB is a per-account offline cache and pending-operation queue. Database failures never silently switch to a local-only production journal. Supabase and Netlify are not used.
