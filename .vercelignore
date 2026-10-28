@@ -1,0 +1,10 @@
+.env*
+.git/
+.tools/
+node_modules/
+artifacts/
+coverage/
+*.db
+*.db-shm
+*.db-wal
+.deployment-state.json
