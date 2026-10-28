@@ -5,6 +5,7 @@ import { createHash } from 'node:crypto'
 const root = resolve('.'), tools = join(root, '.tools'), statePath = join(root, '.deployment-state.json')
 const state = existsSync(statePath) ? JSON.parse(readFileSync(statePath, 'utf8')) : {}
 function run(binary, args, options = {}) { const result = spawnSync(binary, args, { cwd: root, encoding: 'utf8', windowsHide: true, ...options }); if (result.error) throw result.error; return result }
+const repositoryURL = value => value.replace(/^git@github\.com:/, 'https://github.com/').replace(/\.git\/?$/, '').replace(/\/$/, '').toLowerCase()
 async function executable() {
   const installed = run('where.exe', ['gh']); if (installed.status === 0) return installed.stdout.trim().split(/\r?\n/)[0]
   if (process.platform !== 'win32' || process.arch !== 'x64') throw new Error('Install the official GitHub CLI from https://cli.github.com, then rerun this command.')
@@ -37,8 +38,10 @@ try {
     else if (mode === 'publish') {
       const remote = run('git', ['remote', 'get-url', 'origin'])
       if (remote.status === 0 && !state.github?.url) throw new Error('An existing Git remote is not registered to this setup. Review it before publishing; nothing was overwritten.')
-      if (state.github && state.github.owner !== user.login) throw new Error('The signed-in GitHub account differs from the recorded repository owner.')
+      if (state.github && state.github.owner.toLowerCase() !== user.login.toLowerCase()) throw new Error('The signed-in GitHub account differs from the recorded repository owner.')
+      if (state.github?.url && remote.status === 0 && repositoryURL(remote.stdout.trim()) !== repositoryURL(state.github.url)) throw new Error('Git origin differs from the recorded repository. No code was pushed; review the remote first.')
       if (!existsSync(join(root, '.git'))) { const init = run('git', ['init', '-b', 'main']); if (init.status !== 0) throw new Error('Git initialization failed.') }
+      if (state.github?.url && remote.status !== 0 && run('git', ['remote', 'add', 'origin', `${state.github.url}.git`]).status !== 0) throw new Error('Could not restore the recorded Git origin.')
       if (run('git', ['config', 'user.name']).status !== 0) run('git', ['config', 'user.name', user.name || user.login])
       if (run('git', ['config', 'user.email']).status !== 0) run('git', ['config', 'user.email', `${user.id}+${user.login}@users.noreply.github.com`])
       if (run('git', ['add', '.']).status !== 0) throw new Error('Could not stage project files.')

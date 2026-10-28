@@ -39,6 +39,8 @@ Open **http://localhost:4173**. This starts the API and Vite production preview 
 
 ## Push to your personal GitHub and deploy
 
+This workspace is linked to the supplied repository, **[Mhxd-Rafii/tend](https://github.com/Mhxd-Rafii/tend)**. The launch helper reuses that recorded repository. It creates a new private repository only when no repository has been recorded in the local deployment state.
+
 One-time sign-ins:
 
 ```powershell
@@ -54,7 +56,7 @@ Then:
 npm run launch
 ```
 
-Launch runs migrations, strict TypeScript checks, client/server tests, a production build, artifact and secret checks, and a real API persistence smoke test. It then creates a **new private GitHub repository** in the authenticated personal account, commits and pushes the source, creates a uniquely named Vercel project, configures server variables through stdin, deploys a preview and production, and checks their returned URLs.
+Launch runs migrations, strict TypeScript checks, client/server tests, a production build, artifact and secret checks, and a real API persistence smoke test. It then commits and pushes the source to the recorded repository (or creates a new private repository when none is recorded), creates a uniquely named Vercel project, configures server variables through stdin, deploys a preview and production, and checks their returned URLs.
 
 The helper will not replace an unrelated repository or existing Vercel project. Local `.deployment-state.json` records repository/project/deployment identities for resuming. GitHub credentials are supplied to Git only for the push command; existing global Git credential settings are preserved. No force push is used.
 
@@ -66,7 +68,7 @@ npm run github:push
 npm run deploy
 ```
 
-`github:push` prepares and pushes a new private repository. `deploy` resumes the configured Vercel project/deployment. Run `launch` for the complete verification sequence first.
+`github:push` pushes the recorded repository, creating a new private repository only if none is recorded. `deploy` resumes the configured Vercel project/deployment. Run `launch` for the complete verification sequence first.
 
 Vercel configuration is in `vercel.json`: Vite build, `dist` frontend output, Node 22 server function in `api/index.ts`, Mumbai region, `/api/*` routing and SPA refresh rewrites. The **whole source project** must be deployed; uploading `dist` alone does not provide the API. Vercel's generated deployment and production alias URLs are used; no hostname is assumed available.
 
