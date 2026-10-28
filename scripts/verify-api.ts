@@ -1,9 +1,9 @@
 import { config } from 'dotenv'
 import { randomBytes, randomUUID } from 'node:crypto'
 import assert from 'node:assert/strict'
-import { createMutation } from '../src/lib/sync'
-import { createSeed } from '../src/lib/seed'
-import type { AppData } from '../src/lib/types'
+import { createMutation } from '../src/lib/sync.js'
+import { createSeed } from '../src/lib/seed.js'
+import type { AppData } from '../src/lib/types.js'
 config({ path: '.env.local', quiet: true }); config({ quiet: true })
 export async function verifyAPI(origin: string, fetcher: (request: Request) => Promise<Response> = fetch) {
   let cookie = '', registered = false, userId = ''
@@ -44,7 +44,7 @@ export async function verifyAPI(origin: string, fetcher: (request: Request) => P
 if (process.argv[1]?.replaceAll('\\', '/').endsWith('/verify-api.ts')) {
   try {
     if (process.argv.includes('--direct')) {
-      const { getDatabase } = await import('../server/db'), { getConfig } = await import('../server/config'), { createApp } = await import('../server/app')
+      const { getDatabase } = await import('../server/db.js'), { getConfig } = await import('../server/config.js'), { createApp } = await import('../server/app.js')
       const client = getDatabase(), config = getConfig(), { app } = createApp(client, config)
       try { console.log(JSON.stringify(await verifyAPI(config.appURL, request => Promise.resolve(app.fetch(request))))) } finally { client.close() }
     } else { const url = process.argv[2]; if (!url || !/^https?:\/\//.test(url)) throw new Error('Pass a deployed URL, or use --direct for the configured Turso database.'); console.log(JSON.stringify(await verifyAPI(new URL(url).origin))) }

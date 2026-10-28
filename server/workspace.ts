@@ -1,10 +1,10 @@
 import type { Client, Transaction, InStatement, Row } from '@libsql/client'
-import { createSeed, newTemplate } from '../src/lib/seed'
-import { backupSchema } from '../src/lib/schemas'
-import { applyOperations, fingerprint, type Mutation, type Operation } from '../src/lib/sync'
-import { isDuplicate } from '../src/lib/analytics'
-import { today } from '../src/lib/dates'
-import type { ActivityLog, ActivityTemplate, AppData, WorkoutExercise, WorkoutSession } from '../src/lib/types'
+import { createSeed, newTemplate } from '../src/lib/seed.js'
+import { backupSchema } from '../src/lib/schemas.js'
+import { applyOperations, fingerprint, type Mutation, type Operation } from '../src/lib/sync.js'
+import { isDuplicate } from '../src/lib/analytics.js'
+import { today } from '../src/lib/dates.js'
+import type { ActivityLog, ActivityTemplate, AppData, WorkoutExercise, WorkoutSession } from '../src/lib/types.js'
 type Reader = Pick<Transaction, 'batch' | 'execute'>
 const decode = <T>(value: unknown): T => JSON.parse(String(value)) as T
 const now = () => new Date().toISOString()

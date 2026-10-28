@@ -1,6 +1,6 @@
-import { createApp } from '../server/app'
-import { getConfig } from '../server/config'
-import { getDatabase } from '../server/db'
+import { createApp } from '../server/app.js'
+import { getConfig } from '../server/config.js'
+import { getDatabase } from '../server/db.js'
 let application: ReturnType<typeof createApp> | undefined
 export default {
   fetch(request: Request) {

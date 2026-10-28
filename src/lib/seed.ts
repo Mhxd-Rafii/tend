@@ -1,4 +1,4 @@
-import type { ActivityTemplate, AppData, Category, ActivityLog } from './types'
+import type { ActivityTemplate, AppData, Category, ActivityLog } from './types.js'
 export const categories: Category[] = [
   { id: 'hair', name: 'Hair care', color: '#d99e63', icon: 'sparkles' },
   { id: 'skin', name: 'Skin care', color: '#b29bcb', icon: 'droplet' },

@@ -1,6 +1,6 @@
 import { getDay, parseISO } from 'date-fns'
-import { dateRange, period, shiftDate } from './dates'
-import type { ActivityLog, ActivityTemplate, LogFilter, WorkoutSession } from './types'
+import { dateRange, period, shiftDate } from './dates.js'
+import type { ActivityLog, ActivityTemplate, LogFilter, WorkoutSession } from './types.js'
 
 export function eligible(t: ActivityTemplate, day: string) {
   if (t.kind !== 'habit' || !t.startDate || day < t.startDate || (t.endDate && day > t.endDate)) return false

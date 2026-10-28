@@ -2,8 +2,8 @@ import { betterAuth } from 'better-auth/minimal'
 import { drizzleAdapter } from '@better-auth/drizzle-adapter'
 import { drizzle } from 'drizzle-orm/libsql'
 import type { Client } from '@libsql/client'
-import type { ServerConfig } from './config'
-import * as schema from './auth-schema'
+import type { ServerConfig } from './config.js'
+import * as schema from './auth-schema.js'
 export function createAuth(client: Client, config: ServerConfig) {
   return betterAuth({
     appName: 'Tend', baseURL: config.appURL, basePath: '/api/auth', secret: config.sessionSecret, trustedOrigins: config.trustedOrigins,

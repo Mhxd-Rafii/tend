@@ -1,6 +1,6 @@
 import { z } from 'zod'
-import { backupSchema } from './schemas'
-import type { AppData } from './types'
+import { backupSchema } from './schemas.js'
+import type { AppData } from './types.js'
 export const collections = ['categories', 'templates', 'logs', 'fields', 'workouts', 'workoutTemplates'] as const
 export type Collection = typeof collections[number]
 export const operationSchema = z.object({ collection: z.enum([...collections, 'preferences']), id: z.string().min(1).max(150), before: z.string().regex(/^[a-f0-9]{64}$/).nullable(), after: z.unknown().nullable() }).strict()

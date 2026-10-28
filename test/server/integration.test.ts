@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { createClient, type Client } from '@libsql/client'
-import { createApp } from '../../server/app'
-import { migrate } from '../../server/migrate'
-import { getConfig } from '../../server/config'
-import { createMutation } from '../../src/lib/sync'
-import type { AppData } from '../../src/lib/types'
+import { createApp } from '../../server/app.js'
+import { migrate } from '../../server/migrate.js'
+import { getConfig } from '../../server/config.js'
+import { createMutation } from '../../src/lib/sync.js'
+import type { AppData } from '../../src/lib/types.js'
 const origin = 'http://localhost:5173', password = 'Correct-horse-plant-2026!'
 let client: Client, application: ReturnType<typeof createApp>
 beforeEach(async () => {

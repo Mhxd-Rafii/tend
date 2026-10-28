@@ -32,7 +32,7 @@ async function deployment(environment) {
   let result
   if (reusable && prior?.url) result = json((await vc(['inspect', prior.url, '--wait', '--timeout', '3m', '--json'], { quiet: true })).stdout)
   else {
-    const output = await vc(['deploy', '--yes', '--json', ...(environment === 'production' ? ['--prod'] : [])], { quiet: true })
+    const output = await vc(['deploy', '--yes', '--json', '--environment', environment], { quiet: true })
     result = json(output.stdout)
   }
   const rawURL = result.url || result.deployment?.url
@@ -46,8 +46,10 @@ async function deployment(environment) {
   const aliases = inspected.alias || inspected.aliases || []
   const alias = environment === 'production' ? aliases.find(value => typeof value === 'string' && value.endsWith('.vercel.app')) : undefined
   const publicURL = alias ? `https://${alias.replace(/^https:\/\//, '')}` : url
-  const probe = await fetch(`${publicURL}/api/health`)
-  if ([401, 403].includes(probe.status) && !(probe.headers.get('content-type') || '').includes('application/json')) {
+  const probe = await fetch(`${publicURL}/api/health`, { redirect: 'manual' })
+  const redirect = probe.headers.get('location')
+  const vercelSignIn = redirect && new URL(redirect, publicURL).hostname === 'vercel.com'
+  if (vercelSignIn || [401, 403].includes(probe.status) && !(probe.headers.get('content-type') || '').includes('application/json')) {
     state[environment].protected = true; state[environment].publicURL = publicURL; saveState(); console.log(`${environment} is READY but Vercel Deployment Protection prevents anonymous verification.`); return state[environment]
   }
   await verify(publicURL)

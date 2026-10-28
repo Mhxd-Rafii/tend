@@ -4,11 +4,11 @@ import { stream } from 'hono/streaming'
 import { createHash, randomUUID } from 'node:crypto'
 import { z, ZodError } from 'zod'
 import type { Client } from '@libsql/client'
-import type { ServerConfig } from './config'
-import { createAuth } from './auth'
-import { AppError, initializeWorkspace, loadWorkspace, mutateWorkspace, resetWorkspace } from './workspace'
-import { mutationSchema, SyncConflict } from '../src/lib/sync'
-import type { AppData } from '../src/lib/types'
+import type { ServerConfig } from './config.js'
+import { createAuth } from './auth.js'
+import { AppError, initializeWorkspace, loadWorkspace, mutateWorkspace, resetWorkspace } from './workspace.js'
+import { mutationSchema, SyncConflict } from '../src/lib/sync.js'
+import type { AppData } from '../src/lib/types.js'
 
 type Session = { user: { id: string; name: string; email: string }; session: { id: string; expiresAt: Date } }
 type Env = { Variables: { session: Session } }
@@ -84,7 +84,7 @@ export function createApp(client: Client, config: ServerConfig) {
     if (result.rows.length !== body.parts || result.rows.some((row, i) => Number(row.part) !== i)) throw new AppError(409, 'INCOMPLETE_UPLOAD', 'Some import parts are missing. Retry the upload.')
     const text = result.rows.map(row => String(row.content)).join('')
     const mutation = mutationSchema.parse(JSON.parse(text))
-    const { fingerprint } = await import('../src/lib/sync')
+    const { fingerprint } = await import('../src/lib/sync.js')
     if (mutation.mutationId !== uploadId || await fingerprint(mutation) !== body.requestHash) throw new AppError(400, 'INVALID_UPLOAD', 'The import contents did not match their checksum.')
     const data = await mutateWorkspace(client, userId, mutation)
     await client.execute({ sql: 'DELETE FROM tend_upload_parts WHERE user_id=? AND upload_id=?', args: [userId, uploadId] })
